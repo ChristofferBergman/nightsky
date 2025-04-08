@@ -90,9 +90,7 @@ function draw() {
 }
 
 // Load CSV
-const response = await fetch('./stars.csv');
-const text = await response.text();
-Papa.parse(text, {
+Papa.parse('./stars.csv', {
     download: true,
     header: true, // auto uses first line as column names
     skipEmptyLines: true,
