@@ -8,6 +8,8 @@ let yaw = 0;
 let pitch = 0;
 let scale = 500;
 
+let useSpherical = false;
+
 let dragging = false;
 let lastX, lastY;
 
@@ -35,6 +37,11 @@ canvas.addEventListener("wheel", e => {
     draw();
 });
 
+canvas.addEventListener("click", () => {
+  useSpherical = !useSpherical;
+  draw();
+});
+
 // Projection function
 function project(x, y, z) {
     let y1 = y * Math.cos(pitch) - z * Math.sin(pitch);
@@ -55,14 +62,23 @@ function draw() {
     
     for (const star of stars) {
         const p = project(star.x, star.y, star.z);
-        if (p.z <= 0) continue;
         
-        const screenX = cx - (p.x / p.z) * scale;
-        const screenY = cy - (p.y / p.z) * scale;
+        let screenX, screenY;
+
+        if (useSpherical) {
+          const r = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
+          if (r === 0) continue;
+          screenX = cx - (p.x / r) * scale;
+          screenY = cy - (p.y / r) * scale;
+        } else {
+          if (p.z <= 0) continue;
+          screenX = cx - (p.x / p.z) * scale;
+          screenY = cy - (p.y / p.z) * scale;
+        }
         
-        let alpha = star.mag <= 2 ? 1 :
+        let alpha = star.mag <= -1 ? 1 :
         star.mag >= 6.5 ? 0 :
-        1 - (star.mag - 2) / (6.5 - 2);
+        1 - (star.mag + 1) / (6.5 + 1);
         
         if (alpha <= 0) continue;
         
@@ -74,7 +90,9 @@ function draw() {
 }
 
 // Load CSV
-Papa.parse('./stars.csv', {
+const response = await fetch('./stars.csv');
+const text = await response.text();
+Papa.parse(text, {
     download: true,
     header: true, // auto uses first line as column names
     skipEmptyLines: true,
@@ -100,4 +118,3 @@ Papa.parse('./stars.csv', {
         console.error("PapaParse failed:", err);
     }
 });
-
