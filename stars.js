@@ -37,7 +37,8 @@ canvas.addEventListener("wheel", e => {
     draw();
 });
 
-canvas.addEventListener("click", () => {
+canvas.addEventListener("contextmenu", (e) => {
+  e.preventDefault(); // prevent the default browser context menu
   useSpherical = !useSpherical;
   draw();
 });
