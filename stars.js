@@ -67,7 +67,6 @@ function draw() {
         let screenX, screenY;
 
         if (useSpherical) {
-          if (p.z <= 0) continue;
           const r = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
           if (r === 0) continue;
           screenX = cx - (p.x / r) * scale;
