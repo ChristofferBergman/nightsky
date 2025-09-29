@@ -110,8 +110,6 @@ function draw() {
     ctx.fillText("Projection: " + RenderingNames[rendering], 10, 10);
 }
 
-const stars = [];
-
 fetch("http://localhost:7474/db/milkyway/tx/commit", {
   method: "POST",
   headers: {
