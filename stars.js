@@ -8,8 +8,6 @@ let yaw = 0;
 let pitch = 0;
 let scale = 500;
 
-let useSpherical = false;
-
 const Rendering = {
     FishEye: 0,
     Spherical: 1,
@@ -47,7 +45,6 @@ canvas.addEventListener("wheel", e => {
 
 canvas.addEventListener("contextmenu", (e) => {
   e.preventDefault(); // prevent the default browser context menu
-  useSpherical = !useSpherical;
   rendering = (rendering + 1) % RenderingNames.length;
   draw();
 });
