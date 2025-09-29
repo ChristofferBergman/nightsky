@@ -110,8 +110,37 @@ function draw() {
     ctx.fillText("Projection: " + RenderingNames[rendering], 10, 10);
 }
 
+const stars = [];
+
+fetch("http://localhost:7474/db/milkyway/tx/commit", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Basic " + btoa("neo4j:gameoflife"),
+  },
+  body: JSON.stringify({
+    statements: [{
+      statement: `
+        MATCH (s:Star)
+        WHERE s.magnitude <= 6.5
+        RETURN s.magnitude AS magnitude, s.position.x AS x, s.position.y AS y, s.position.z AS z
+      `
+    }]
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const rows = data.results[0].data;
+  for (const row of rows) {
+    const [mag, x, y, z] = row.row;
+    stars.push({ mag, x, y, z });
+  }
+  draw(); // render after load
+})
+.catch(err => console.error("Failed to load stars via HTTP:", err));
+
 // Load CSV
-Papa.parse('./stars.csv', {
+/*Papa.parse('./stars.csv', {
     download: true,
     header: true, // auto uses first line as column names
     skipEmptyLines: true,
@@ -136,4 +165,4 @@ Papa.parse('./stars.csv', {
     error: function(err) {
         console.error("PapaParse failed:", err);
     }
-});
+});*/
