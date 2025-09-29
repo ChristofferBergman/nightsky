@@ -10,6 +10,14 @@ let scale = 500;
 
 let useSpherical = false;
 
+const Rendering = {
+    FishEye: 0,
+    Spherical: 1,
+    SphericalExternal: 2,
+};
+const RenderingNames = ["Fish eye", "Spherical", "Spherical (external observer)"];
+let rendering = Rendering.FishEye;
+
 let dragging = false;
 let lastX, lastY;
 
@@ -40,6 +48,7 @@ canvas.addEventListener("wheel", e => {
 canvas.addEventListener("contextmenu", (e) => {
   e.preventDefault(); // prevent the default browser context menu
   useSpherical = !useSpherical;
+  rendering = (rendering + 1) % RenderingNames.length;
   draw();
 });
 
@@ -66,12 +75,20 @@ function draw() {
         
         let screenX, screenY;
 
-        if (useSpherical) {
+        if (rendering === Rendering.Spherical) {
+          if (p.z <= 0) continue;
+          const r = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
+          if (r === 0) continue;
+          const azimuth = Math.atan2(p.x, p.z);
+          const elevation = Math.asin(p.y / r);
+          screenX = cx + azimuth * scale;
+          screenY = cy - elevation * scale;
+        } else if (rendering === Rendering.SphericalExternal) {
           const r = Math.sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
           if (r === 0) continue;
           screenX = cx - (p.x / r) * scale;
           screenY = cy - (p.y / r) * scale;
-        } else {
+        } else { // rendering === Rendering.FishEye
           if (p.z <= 0) continue;
           screenX = cx - (p.x / p.z) * scale;
           screenY = cy - (p.y / p.z) * scale;
@@ -88,6 +105,12 @@ function draw() {
         ctx.arc(screenX, screenY, 1.5, 0, Math.PI * 2);
         ctx.fill();
     }
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText("Projection: " + RenderingNames[rendering], 10, 10);
 }
 
 // Load CSV
