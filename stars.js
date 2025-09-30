@@ -110,11 +110,13 @@ function draw() {
     ctx.fillText("Projection: " + RenderingNames[rendering], 10, 10);
 }
 
+/*
+// Version that fetches the data from a local Neo4j instance
 fetch("http://localhost:7474/db/milkyway/tx/commit", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Basic " + btoa("neo4j:gameoflife"),
+    "Authorization": "Basic " + btoa("neo4j:_password_"),
   },
   body: JSON.stringify({
     statements: [{
@@ -136,9 +138,10 @@ fetch("http://localhost:7474/db/milkyway/tx/commit", {
   draw(); // render after load
 })
 .catch(err => console.error("Failed to load stars via HTTP:", err));
+*/
 
-// Load CSV
-/*Papa.parse('./stars.csv', {
+// Version that loads from a CSV instead
+Papa.parse('./stars.csv', {
     download: true,
     header: true, // auto uses first line as column names
     skipEmptyLines: true,
@@ -163,4 +166,4 @@ fetch("http://localhost:7474/db/milkyway/tx/commit", {
     error: function(err) {
         console.error("PapaParse failed:", err);
     }
-});*/
+});
