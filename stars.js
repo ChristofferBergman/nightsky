@@ -4,8 +4,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stars = [];
-let yaw = -2.92;
-let pitch = -1.49;
+let yaw = 0;
+let pitch = 0;
 let scale = 500;
 
 const Rendering = {
@@ -107,7 +107,7 @@ function draw() {
     ctx.font = "16px sans-serif";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText("Projection: " + RenderingNames[rendering], 10, 10);
+    ctx.fillText("Projection: " + RenderingNames[rendering] + ": " + yaw + ", " + pitch, 10, 10);
 }
 
 /*
