@@ -4,8 +4,8 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stars = [];
-let yaw = 0;
-let pitch = 0;
+let yaw = -2.92;
+let pitch = -1.49;
 let scale = 500;
 
 const Rendering = {
